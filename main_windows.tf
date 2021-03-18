@@ -29,10 +29,18 @@ resource "azurerm_virtual_machine" "this-w" {
   delete_data_disks_on_termination = var.delete_data_disks_on_termination
 
   storage_image_reference {
+    count = var.storage_image_reference_id == null ? 1 : 0
+
     publisher = var.storage_image_reference.publisher
     offer     = var.storage_image_reference.offer
     sku       = var.storage_image_reference.sku
     version   = var.storage_image_reference.version
+  }
+
+  storage_image_reference {
+    count = var.storage_image_reference_id != null ? 1 : 0
+    
+    id = var.storage_image_reference_id
   }
 
   storage_os_disk {

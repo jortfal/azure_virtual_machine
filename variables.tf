@@ -51,6 +51,12 @@ variable "storage_image_reference" {
     })
 }
 
+variable "storage_image_reference_id" {
+    description = "he ID of the Custom Image which the Virtual Machine should be created from"
+    type        = string
+    default     = null
+}
+
 variable "storage_os_disk" {
     description = "The image reference of virtual machine"
     type        = object({
