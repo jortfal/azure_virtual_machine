@@ -15,7 +15,7 @@ limitations under the License.
 */
 
 # Windows Virtual Machine
-resource "azurerm_virtual_machine" "this-w" {
+resource "azurerm_virtual_machine" "this-w-custom" {
   count = var.os_type == "windows-custom-image" ? 1 : 0
 
   name                         = var.name

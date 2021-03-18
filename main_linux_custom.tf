@@ -15,7 +15,7 @@ limitations under the License.
 */
 
 # Linux Virtual Machine
-resource "azurerm_virtual_machine" "this" {
+resource "azurerm_virtual_machine" "this-custom" {
   count = var.os_type == "linux-custom-image" ? 1 : 0
 
   name                         = var.name
