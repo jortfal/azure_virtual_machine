@@ -36,7 +36,7 @@ variable "vm_size" {
 }
 
 variable "os_type" {
-  description = "The type of os, it can be 'linux' or 'windows'"
+  description = "The type of os, it can be 'linux', 'windows', 'linux-custom-image' or 'windows-custom-image'"
   type        = string
   default     = null
 }
@@ -65,6 +65,12 @@ variable "storage_os_disk" {
       create_option     = string
       managed_disk_type = string
     })
+    default = {
+      name              = null
+      caching           = null
+      create_option     = null
+      managed_disk_type = null
+    }
 }
 
 variable "delete_os_disk_on_termination" {
