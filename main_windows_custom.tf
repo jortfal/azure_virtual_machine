@@ -16,7 +16,7 @@ limitations under the License.
 
 # Windows Virtual Machine
 resource "azurerm_virtual_machine" "this-w" {
-  count = var.os_type == "windows" ? 1 : 0
+  count = var.os_type == "windows-custom-image" ? 1 : 0
 
   name                         = var.name
   location                     = data.azurerm_resource_group.this.location
@@ -28,11 +28,8 @@ resource "azurerm_virtual_machine" "this-w" {
   delete_os_disk_on_termination    = var.delete_os_disk_on_termination
   delete_data_disks_on_termination = var.delete_data_disks_on_termination
 
-  storage_image_reference {
-    publisher = var.storage_image_reference.publisher
-    offer     = var.storage_image_reference.offer
-    sku       = var.storage_image_reference.sku
-    version   = var.storage_image_reference.version
+  storage_image_reference {    
+    id = var.storage_image_reference_id
   }
 
   storage_os_disk {
