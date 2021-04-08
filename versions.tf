@@ -1,5 +1,5 @@
 /* 
-Copyright 2020 José Mnauel Ortega Falcón
+Copyright 2021 jortfal | José Mnauel Ortega Falcón
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -15,12 +15,12 @@ limitations under the License.
 */
 
 # Configure the Terraform settings
-terraform {  
-  required_version = ">= 0.13.0, < 0.14"
+terraform {
+  required_version = ">= 0.13.0, <= 0.14.10"
   required_providers {
     azurerm = {
-      source = "hashicorp/azurerm"
-      version = ">= 2.20.0, <= 2.30.0"
+      source  = "hashicorp/azurerm"
+      version = ">= 2.30.0, <= 2.54.0"
     }
   }
 }
