@@ -1,5 +1,5 @@
 /* 
-Copyright 2020 José Mnauel Ortega Falcón
+Copyright 2021 jortfal | José Mnauel Ortega Falcón
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -14,9 +14,8 @@ See the License for the specific language governing permissions and
 limitations under the License. 
 */
 
-# Windows Virtual Machine
-resource "azurerm_virtual_machine" "this-w" {
-  count = var.os_type == "windows" ? 1 : 0
+# Linux Virtual Machine
+resource "azurerm_virtual_machine" "this" {
 
   name                         = var.name
   location                     = data.azurerm_resource_group.this.location
@@ -28,11 +27,21 @@ resource "azurerm_virtual_machine" "this-w" {
   delete_os_disk_on_termination    = var.delete_os_disk_on_termination
   delete_data_disks_on_termination = var.delete_data_disks_on_termination
 
-  storage_image_reference {
-    publisher = var.storage_image_reference.publisher
-    offer     = var.storage_image_reference.offer
-    sku       = var.storage_image_reference.sku
-    version   = var.storage_image_reference.version
+  dynamic "storage_image_reference" {
+    for_each = var.storage_image_reference_id == null ? [1] : []
+    content {
+      publisher = var.storage_image_reference.publisher
+      offer     = var.storage_image_reference.offer
+      sku       = var.storage_image_reference.sku
+      version   = var.storage_image_reference.version
+    }
+  }
+
+  dynamic "storage_image_reference" {
+    for_each = var.storage_image_reference_id != null ? [1] : []
+    content {
+      id = var.storage_image_reference_id
+    }
   }
 
   storage_os_disk {
@@ -45,14 +54,14 @@ resource "azurerm_virtual_machine" "this-w" {
   dynamic "storage_data_disk" {
     for_each = var.storage_data_disk_list
     content {
-      name = storage_data_disk.value["name"]
-      caching = storage_data_disk.value["caching"]
-      create_option = storage_data_disk.value["create_option"]
-      disk_size_gb = storage_data_disk.value["disk_size_gb"]
-      lun = storage_data_disk.value["lun"]
+      name                      = storage_data_disk.value["name"]
+      caching                   = storage_data_disk.value["caching"]
+      create_option             = storage_data_disk.value["create_option"]
+      disk_size_gb              = storage_data_disk.value["disk_size_gb"]
+      lun                       = storage_data_disk.value["lun"]
       write_accelerator_enabled = storage_data_disk.value["write_accelerator_enabled"]
-      managed_disk_type = storage_data_disk.value["managed_disk_type"] 
-      managed_disk_id = storage_data_disk.value["managed_disk_id"]
+      managed_disk_type         = storage_data_disk.value["managed_disk_type"]
+      managed_disk_id           = storage_data_disk.value["managed_disk_id"]
     }
   }
 
@@ -61,10 +70,20 @@ resource "azurerm_virtual_machine" "this-w" {
     admin_username = var.os_profile.admin_username
     admin_password = var.os_profile.admin_password
   }
-    
-  os_profile_windows_config {
-    provision_vm_agent = var.os_profile_windows_config.provision_vm_agent
-    enable_automatic_upgrades = var.os_profile_windows_config.enable_automatic_upgrades
+
+  dynamic "os_profile_linux_config" {
+    for_each = var.os_type == "linux" ? [1] : []
+    content {
+      disable_password_authentication = var.os_profile_linux_config.disable_password_authentication
+    }
+  }
+
+  dynamic "os_profile_windows_config" {
+    for_each = var.os_type == "windows" ? [1] : []
+    content {
+      provision_vm_agent        = var.os_profile_windows_config.provision_vm_agent
+      enable_automatic_upgrades = var.os_profile_windows_config.enable_automatic_upgrades
+    }
   }
 
   tags = merge(
